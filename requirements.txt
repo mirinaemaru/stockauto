@@ -1,0 +1,4 @@
+requests
+pandas
+PyQt5
+pymysql
