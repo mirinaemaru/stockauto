@@ -4,10 +4,10 @@ import os
 import re
 import requests
 import importlib
-import secrets
+import project_secrets as secrets
 from config import APP_KEY, APP_SECRET, BASE_URL
 
-SECRETS_FILE = "secrets.py"
+SECRETS_FILE = "project_secrets.py"
 
 class TokenManager:
     def __init__(self):
@@ -37,7 +37,7 @@ class TokenManager:
             access_token = data["access_token"]
             
             self._update_secrets_file(access_token, expiration_time)
-            print("New token issued and saved to secrets.py.")
+            print("New token issued and saved to project_secrets.py.")
             return access_token
             
         except Exception as e:
@@ -47,7 +47,7 @@ class TokenManager:
             return None
 
     def _update_secrets_file(self, token, expiry):
-        """Update secrets.py with new token and expiry."""
+        """Update project_secrets.py with new token and expiry."""
         try:
             with open(self.secrets_file, 'r') as f:
                 content = f.read()

@@ -141,18 +141,18 @@ class LoginWindow(QDialog):
         self.load_credentials()
         
     def load_credentials(self):
-        """Load credentials from secrets.py if available"""
+        """Load credentials from project_secrets.py if available"""
         try:
-            from secrets import APP_KEY, APP_SECRET, ACCOUNT_NO
+            from project_secrets import APP_KEY, APP_SECRET, ACCOUNT_NO
             if APP_KEY and APP_KEY != "YOUR_APP_KEY_HERE":
                 self.app_key_input.setText(APP_KEY)
             if APP_SECRET and APP_SECRET != "YOUR_APP_SECRET_HERE":
                 self.app_secret_input.setText(APP_SECRET)
             if ACCOUNT_NO and ACCOUNT_NO != "YOUR_ACCOUNT_NO_HERE":
                 self.account_input.setText(ACCOUNT_NO)
-            self.status_label.setText("secrets.py에서 정보를 불러왔습니다.")
+            self.status_label.setText("project_secrets.py에서 정보를 불러왔습니다.")
         except ImportError:
-            self.status_label.setText("secrets.py 파일이 없습니다. 직접 입력해주세요.")
+            self.status_label.setText("project_secrets.py 파일이 없습니다. 직접 입력해주세요.")
         except Exception as e:
             self.status_label.setText(f"정보 로드 실패: {str(e)}")
             

@@ -18,11 +18,8 @@ class DailyTradingBatch:
             
         # Use provided date if available, else today
         bas_dt = info.get('basDt')
-        if bas_dt:
-             # Convert YYYYMMDD to YYYY-MM-DD
-             bas_dt = f"{bas_dt[:4]}-{bas_dt[4:6]}-{bas_dt[6:]}"
-        else:
-             bas_dt = datetime.now().strftime("%Y-%m-%d")
+        if not bas_dt:
+             bas_dt = datetime.now().strftime("%Y%m%d")
         
         query = """
             INSERT INTO stock_price_info (
@@ -72,16 +69,12 @@ class DailyTradingBatch:
         print("=" * 60)
         
         try:
-             # Convert dates for DB (YYYYMMDD -> YYYY-MM-DD)
-            s_dt_fmt = f"{start_date[:4]}-{start_date[4:6]}-{start_date[6:]}"
-            e_dt_fmt = f"{end_date[:4]}-{end_date[4:6]}-{end_date[6:]}"
-            
-            print(f"기존 데이터 삭제 중... ({s_dt_fmt} ~ {e_dt_fmt})")
+            print(f"기존 데이터 삭제 중... ({start_date} ~ {end_date})")
             del_query = "DELETE FROM stock_price_info WHERE basDt BETWEEN %s AND %s"
-            self.db.execute(del_query, (s_dt_fmt, e_dt_fmt))
+            self.db.execute(del_query, (start_date, end_date))
             print("기존 데이터 삭제 완료.\n")
             
-            query = "SELECT code, name, gubun, trade_amount FROM stock WHERE use_yn = 'Y' ORDER BY trade_amount DESC"
+            query = "SELECT code, name, gubun FROM stock WHERE use_yn = 'Y'"
             targets = self.db.fetch_all(query)
             
             print(f"총 {len(targets)}개 종목 처리 시작...\n")
@@ -159,17 +152,23 @@ class DailyTradingBatch:
             self.db.close()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Daily Trading Batch')
-    parser.add_argument('--start', type=str, help='Start Date (YYYYMMDD)')
-    parser.add_argument('--end', type=str, help='End Date (YYYYMMDD)')
+    import sys
     
-    args = parser.parse_args()
-    
-    # Default to today if not provided
+    # Default to today
     today = datetime.now().strftime("%Y%m%d")
+    s_date = today
+    e_date = today
     
-    s_date = args.start if args.start else today
-    e_date = args.end if args.end else s_date # If end not provided, same as start
+    args = sys.argv[1:]
+    
+    if len(args) == 1:
+        # 1 argument: start = end = arg1
+        s_date = args[0]
+        e_date = args[0]
+    elif len(args) == 2:
+        # 2 arguments: start = args[0], end = args[1]
+        s_date = args[0]
+        e_date = args[1]
     
     batch = DailyTradingBatch()
     batch.run(s_date, e_date)

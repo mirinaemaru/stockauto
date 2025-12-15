@@ -2,10 +2,10 @@
 
 # API Credentials (KEEP SAFE!)
 try:
-    from secrets import APP_KEY, APP_SECRET, ACCOUNT_NO
-    from secrets import DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
+    from project_secrets import APP_KEY, APP_SECRET, ACCOUNT_NO
+    from project_secrets import DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
 except ImportError:
-    print("Warning: secrets.py not found. Please create it with your credentials.")
+    print("Warning: project_secrets.py not found. Please create it with your credentials.")
     APP_KEY = None
     APP_SECRET = None
     ACCOUNT_NO = None

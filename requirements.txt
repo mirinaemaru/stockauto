@@ -2,3 +2,4 @@ requests
 pandas
 PyQt5
 pymysql
+pykrx
